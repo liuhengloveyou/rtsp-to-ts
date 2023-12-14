@@ -1,4 +1,4 @@
-package main
+package rtsp2ts
 
 // #cgo windows CFLAGS: -DCGO_OS_WINDOWS=1
 // #cgo darwin CFLAGS: -DCGO_OS_DARWIN=1

@@ -1,4 +1,4 @@
-package main
+package rtsp2ts
 
 import (
 	"log"
@@ -15,7 +15,7 @@ var rtspClient *gortsplib.Client
 var rtpDec *rtph264.Decoder
 var iframeReceived bool
 
-func initRtsp(url string) error {
+func InitRtsp(url string) error {
 	// parse URL
 	u, err := base.ParseURL(url)
 	if err != nil {

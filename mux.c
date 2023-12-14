@@ -301,16 +301,10 @@ static int write_audio_frame(AVFormatContext *ofmt_ctx, OutputStream *ost, AVFra
 
     AVCodecContext *encode_ctx = ost->enc;
 
-    /* convert samples from native format to destination codec format, using the resampler */
-    /* compute destination number of samples */
     dst_nb_samples = av_rescale_rnd(swr_get_delay(ost->swr_ctx, encode_ctx->sample_rate) + frame->nb_samples,
                                     encode_ctx->sample_rate, encode_ctx->sample_rate, AV_ROUND_UP);
     av_assert0(dst_nb_samples == frame->nb_samples);
 
-    /* when we pass a frame to the encoder, it may keep a reference to it
-     * internally;
-     * make sure we do not overwrite it here
-     */
     ret = av_frame_make_writable(ost->frame);
     if (ret < 0)
         exit(1);
@@ -383,9 +377,6 @@ static void open_video(AVFormatContext *ofmt_ctx,
         exit(1);
     }
 
-    /* If the output format is not YUV420P, then a temporary YUV420P
-     * picture is needed too. It is then converted to the required
-     * output format. */
     ost->tmp_frame = NULL;
     if (c->pix_fmt != AV_PIX_FMT_YUV420P)
     {
@@ -433,8 +424,6 @@ static AVFrame *get_video_frame(OutputStream *ost)
 {
     AVCodecContext *codec_ctx = ost->enc;
 
-    /* when we pass a frame to the encoder, it may keep a reference to it
-     * internally; make sure we do not overwrite it here */
     if (av_frame_make_writable(ost->frame) < 0)
         exit(1);
 
@@ -468,10 +457,6 @@ static AVFrame *get_video_frame(OutputStream *ost)
     return ost->frame;
 }
 
-/*
- * encode one video frame and send it to the muxer
- * return 1 when encoding is finished, 0 otherwise
- */
 static int write_video_frame(AVFormatContext *ofmt_ctx, OutputStream *ost, AVFrame *frame)
 {
     /* check if we want to generate more frames */
@@ -519,8 +504,6 @@ int init_mux(const char *filename)
         return -1;
     }
 
-    /* Add the audio and video streams using the default format codecs
-     * and initialize the codecs. */
     if (ofmt->video_codec != AV_CODEC_ID_NONE)
     {
         add_stream(&video_st, ofmt_ctx, &video_codec, ofmt->video_codec);
@@ -530,8 +513,6 @@ int init_mux(const char *filename)
         add_stream(&audio_st, ofmt_ctx, &audio_codec, ofmt->audio_codec);
     }
 
-    /* Now that all the parameters are set, we can open the audio and
-     * video codecs and allocate the necessary encode buffers. */
     open_video(ofmt_ctx, video_codec, &video_st, opt);
     open_audio(ofmt_ctx, audio_codec, &audio_st, opt);
 
@@ -614,12 +595,3 @@ int mux()
         }
     }
 }
-
-// int main()
-// {
-//     init_mux("./aaa.ts");
-//     mux();
-//     close_mux();
-
-//     return 0;
-// }
