@@ -15,9 +15,12 @@ func main() {
 	}
 	defer rtsp2ts.CloseDecoder()
 
-	if err := rtsp2ts.InitRtsp("rtsp://admin:qwer1234@172.29.251.10:554/h264/ch33/main/av_stream"); err != nil {
+	rtsp2tsObj, err := rtsp2ts.NewRtspToTS("rtsp://admin:qwer1234@172.29.251.10:554/h264/ch33/main/av_stream")
+	if err != nil {
 		panic(err)
 	}
+
+	rtsp2tsObj.Run()
 
 	for {
 		time.Sleep(1)
