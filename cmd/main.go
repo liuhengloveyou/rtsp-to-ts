@@ -7,15 +7,7 @@ import (
 )
 
 func main() {
-
-	rtsp2ts.InitMux("gogog.ts")
-
-	if err := rtsp2ts.InitDecoder(); err != nil {
-		panic(err)
-	}
-	defer rtsp2ts.CloseDecoder()
-
-	rtsp2tsObj, err := rtsp2ts.NewRtspToTS("rtsp://admin:qwer1234@172.29.251.10:554/h264/ch33/main/av_stream")
+	rtsp2tsObj, err := rtsp2ts.NewRtspToTS("rtsp://admin:qwer1234@172.29.251.10:554/h264/ch33/main/av_stream", "gogogo.ts")
 	if err != nil {
 		panic(err)
 	}

@@ -1,5 +1,6 @@
 {
     "files.associations": {
-        "c_api.h": "c"
+        "c_api.h": "c",
+        "encoder.h": "c"
     }
 }

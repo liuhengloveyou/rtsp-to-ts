@@ -23,60 +23,7 @@ import (
 // #include <libavutil/frame.h>
 // #include <libavutil/timestamp.h>
 // #include <libavformat/avformat.h>
-//
-// #include "c_api.h"
 import "C"
-
-func InitDecoder() error {
-	rst := C.init_decoder()
-	fmt.Println("C.init_decoder: ", rst)
-
-	return nil
-}
-
-func CloseDecoder() {
-	C.close_decoder()
-}
-
-func Decode(nalu []byte) (image.Image, error) {
-	nalu = append([]uint8{0x00, 0x00, 0x00, 0x01}, []uint8(nalu)...)
-
-	// send NALU to decoder
-	var avPacket C.AVPacket
-	avPacket.data = (*C.uint8_t)(C.CBytes(nalu))
-	// defer C.free(unsafe.Pointer(avPacket.data))
-	avPacket.size = C.int(len(nalu))
-
-	var dstFrame *C.AVFrame
-	res := C.decode(&avPacket, &dstFrame)
-	if res < 0 {
-		return nil, nil
-	}
-
-	// dstFrameSize := C.av_image_get_buffer_size((int32)(dstFrame.format), dstFrame.width, dstFrame.height, 1)
-	// dstFramePtr := (*[1 << 30]uint8)(unsafe.Pointer(dstFrame.data[0]))[:dstFrameSize:dstFrameSize]
-
-	// // embed frame into an image.Image
-	// img := &image.RGBA{
-	// 	Pix:    dstFramePtr,
-	// 	Stride: 4 * (int)(dstFrame.width),
-	// 	Rect: image.Rectangle{
-	// 		Max: image.Point{(int)(dstFrame.width), (int)(dstFrame.height)},
-	// 	},
-	// }
-	// fmt.Println("saveToFile......")
-	// // convert frame to JPEG and save to file
-	// err := saveToFile(img)
-	// if err != nil {
-	// 	panic(err)
-	// }
-
-	return nil, nil
-}
-
-func InitMux(fn string) {
-	C.init_mux(C.CString(fn))
-}
 
 func frameData(frame *C.AVFrame) **C.uint8_t {
 	return (**C.uint8_t)(unsafe.Pointer(&frame.data[0]))

@@ -13,7 +13,7 @@
 #include <libswscale/swscale.h>
 #include <libswresample/swresample.h>
 
-#include "c_api.h"
+#include "encoder.h"
 
 #define STREAM_DURATION 10.0
 
@@ -557,7 +557,7 @@ int close_mux()
     avformat_free_context(ofmt_ctx);
 }
 
-int mux_video_frame(AVFrame *frame)
+int encode_video_frame(AVFrame *frame)
 {
     if (frame == NULL)
     {
